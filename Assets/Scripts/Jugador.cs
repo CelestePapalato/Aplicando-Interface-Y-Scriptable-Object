@@ -25,14 +25,22 @@ public class Jugador : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             Collider2D[] collisions = Physics2D.OverlapCircleAll(transform.position, 5f);
+            IPresentacion enemigoCercano = null;
+            float distanciaMinima = -1;
             foreach (Collider2D collision in collisions)
             {
                 IPresentacion presentacion;
                 if (collision.gameObject.TryGetComponent<IPresentacion>(out presentacion))
                 {
-                    presentacion.Accion();
+                    float distancia = (collision.transform.position - transform.position).magnitude;
+                    if (distancia < distanciaMinima || distanciaMinima < 0)
+                    {
+                        distanciaMinima = distancia;
+                        enemigoCercano = presentacion;
+                    }
                 }
             }
+            enemigoCercano?.Accion();
         }
     }
 
